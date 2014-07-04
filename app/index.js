@@ -1,4 +1,6 @@
 var yeoman = require('yeoman-generator');
+var yosay = require('yosay');
+var chalk = require('chalk');
 
 // Export main module
 module.exports = yeoman.generators.NamedBase.extend({
@@ -9,6 +11,9 @@ module.exports = yeoman.generators.NamedBase.extend({
   constructor: function () {
     // Call super
     yeoman.generators.Base.apply(this, arguments);
+
+    // Put an initial welcome text
+    this.log(yosay( chalk.green("Hello world!") + "\n" + chalk.green("Its time to generator this project!") ));
   },
   /**
   *  Ask all the necessary prompts
@@ -59,6 +64,9 @@ module.exports = yeoman.generators.NamedBase.extend({
     if (this.props.bootstrap) {
       var done = this.async();
 
+      // Give a message
+      this.log(yosay( chalk.magenta("Time to download Bootstrap!") ));
+
       this.remote("twbs", "bootstrap-sass", "master", function(err, remote) {
         // Copy to destination
         remote.directory("assets", ".");
@@ -66,6 +74,13 @@ module.exports = yeoman.generators.NamedBase.extend({
         done();
       }, true);
     }
+  },
+  /**
+  *  Move main sass file across
+  **/
+  moveSassFile: function () {
+    // Move across the default style.scss for bootstrap
+    this.template("_style.scss", "stylesheets/style.scss");
   },
   /**
   *  Download jQuery
@@ -80,8 +95,48 @@ module.exports = yeoman.generators.NamedBase.extend({
     }
 
     // Download the file
-    this.fetch("http://code.jquery.com/jquery-1.11.1.min.js", "./javascripts", function (cb) {
+    this.fetch(jquery, "./javascripts", function (cb) {
       done();
     });
+  },
+  /**
+  *  Download RequireJS
+  **/
+  downloadRequire: function () {
+    var done = this.async();
+
+    if (this.props.require) {
+      this.remote("jrburke", "requirejs", "master", function (err, remote) {
+        // Copy to destination
+        remote.copy("require.js", "javascripts/require.js");
+
+        done();
+      });
+    } else {
+      done();
+    }
+  },
+  /**
+  *  Make app.js for requireJS
+  **/
+  createAppJs: function () {
+    if (this.props.require) {
+      this.template("_app.js", "javascripts/app.js");
+    }
+  },
+  /**
+  *  Create Gruntfile across
+  **/
+  createGrunt: function () {
+    this.template("_Gruntfile.js", "Gruntfile.js");
+  },
+  /**
+  *  Install all dependancies for this project
+  **/
+  installDeps: function () {
+    this.log(yosay( chalk.green("Hold on!") + "\n" + chalk.green("Installing all required modules...") ));
+
+    // Install NPM deps
+    this.npmInstall();
   }
 });

@@ -1,4 +1,17 @@
 {
   "name": "<%= _.slugify(props.name) %>",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "author": {
+    "name": "Ph.Creative",
+    "url": "http://www.ph-creative.com"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-sass": "0.12.1",
+    "grunt-contrib-jshint": "~0.10.0",
+    <% if (props.require) { %>
+      "grunt-contrib-requirejs": "~0.4.4"
+    <% } %>
+  }
 }
