@@ -1,0 +1,4 @@
+{
+  "name": "<%= _.slugify(props.name) %>",
+  "version": "1.0.0"
+}
