@@ -36,19 +36,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    <% if (props.require) { %>
-      /**
-      *  r.js build command
-      **/
-      requirejs: {
-        compile: {
-          options: {
-            baseUrl: "javascripts",
-            mainConfigFile: "javascripts/build.js"
-          }
-        }
-      },
-    <% } %>
     /**
     *  JSHint
     **/
@@ -85,10 +72,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-
-  <% if (props.require) { %>
-    grunt.loadNpmTasks("grunt-contrib-requirejs");
-  <% } %>
 
   // Grunt tasks
   grunt.registerTask("default", ["watch"]);

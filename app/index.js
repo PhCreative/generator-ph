@@ -30,7 +30,12 @@ module.exports = yeoman.generators.NamedBase.extend({
     }, {
       name: "bootstrap",
       type: "confirm",
-      message: "Do you want to Bootstrap?",
+      message: "Do you want to use Bootstrap?",
+      default: true
+    }, {
+      name: "fontawesome",
+      type: "confirm",
+      message: "Do you want to use Font Awesome?",
       default: true
     }, {
       name: "jquery",
@@ -67,9 +72,28 @@ module.exports = yeoman.generators.NamedBase.extend({
       // Give a message
       this.log(yosay( chalk.magenta("Time to download Bootstrap!") ));
 
-      this.remote("twbs", "bootstrap-sass", "master", function(err, remote) {
+      this.remote("twbs", "bootstrap-sass", "master", function (err, remote) {
         // Copy to destination
         remote.directory("assets", ".");
+
+        done();
+      }, true);
+    }
+  },
+  /**
+  *  Download font awesome
+  **/
+  donwloadFontAwesome: function () {
+    if (this.props.fontawesome) {
+      var done = this.async();
+
+      // Give a message
+      this.log(yosay( chalk.magenta("Time to download Font Awesome!") ));
+
+      this.remote("FortAwesome", "Font-Awesome", "master", function (err, remote) {
+        // Copy to destination
+        remote.directory("scss", "stylesheets/fontawesome");
+        remote.directory("fonts", "./fonts");
 
         done();
       }, true);
