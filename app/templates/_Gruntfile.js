@@ -20,15 +20,6 @@ module.exports = function(grunt) {
           livereload: true
         }
       },
-      <% if (props.require) { %>
-        appJs: {
-          files: "javascripts/app.js",
-          tasks: ["requirejs"],
-          options: {
-            livereload: true
-          }
-        },
-      <% } %>
       livereload: {
         files: "<%%= pkg.files %>",
         options: {
@@ -51,7 +42,7 @@ module.exports = function(grunt) {
           define: true
         }
       },
-      all: ["javascripts/*.js", "javascripts/**/*.js", "!javascripts/app.js", "!javascripts/app.min.js"]
+      all: ["javascripts/*.js", "javascripts/**/*.js", "!javascripts/bootstrap/*js", "!javascripts/app.js"]
     },
     /**
     * Run node-sass

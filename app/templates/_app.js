@@ -2,6 +2,7 @@ require.config({
   baseUrl: "/javascripts",
   paths: {
     "jquery": <% (props.jquery) ? "jquery-2.1.1.min.js" : "jquery-1.11.1.min.js" %>,
+    <% if (props.bootstrap) { %>
     "affix": "bootstrap/affix",
     "alert": "bootstrap/alert",
     "button": "bootstrap/button",
@@ -13,11 +14,13 @@ require.config({
     "tab": "bootstrap/tab",
     "tooltip": "bootstrap/tooltip",
     "transition": "bootstrap/transition"
+    <% } %>
   },
   shim: {
     "jquery": {
       "exports": "$"
     },
+    <% if (props.bootstrap) { %>
     "affix": {
       "deps": ["jquery"]
     },
@@ -51,5 +54,6 @@ require.config({
     "transition": {
       "deps": ["jquery"]
     }
+    <% } %>
   }
 });

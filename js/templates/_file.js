@@ -1,8 +1,10 @@
 /**
 *  <%= props.name %>.js
 *
+*  Requires: jQuery
+*
 *  Copyright <%= year %> Ph.Creative
 **/
-$(function () {
+define(["jquery"], function ($) {
   "use strict";
 });
