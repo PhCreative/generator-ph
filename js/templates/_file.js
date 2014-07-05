@@ -1,5 +1,5 @@
 /**
-*  <%= props.name %>.js
+*  <%= props.file %>.js
 *
 *  Requires: jQuery
 *
