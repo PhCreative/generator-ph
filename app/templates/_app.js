@@ -1,7 +1,7 @@
 require.config({
   baseUrl: "/javascripts",
   paths: {
-    "jquery": <% (props.jquery) ? "jquery-2.1.1.min.js" : "jquery-1.11.1.min.js" %>,
+    "jquery": <% if (props.jquery) { %>"jquery-2.1.1.min.js"<% } else { %>"jquery-1.11.1.min.js"<% } %>,
     <% if (props.bootstrap) { %>
     "affix": "bootstrap/affix",
     "alert": "bootstrap/alert",
