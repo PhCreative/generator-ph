@@ -1,6 +1,7 @@
-var yeoman = require('yeoman-generator');
-var yosay = require('yosay');
-var chalk = require('chalk');
+var yeoman = require('yeoman-generator'),
+     yosay = require('yosay'),
+     chalk = require('chalk'),
+   replace = "//JSInsertLeaveAsIs";
 
 module.exports = yeoman.generators.NamedBase.extend({
   constructor: function () {
@@ -36,6 +37,13 @@ module.exports = yeoman.generators.NamedBase.extend({
 
       // Create file
       this.template("_file.js", "javascripts/" + this.props.file + ".js");
+
+      // Upload app.js to specify the deps on this file
+      var file = this.readFileAsString("javascripts/app.js");
+
+      var add = "\"" + this.props.file + "\": { \"deps\": [\"jquery\"] },\n" + replace;
+
+      this.write("javascripts/app.js", file.replace(replace, add));
 
       // Done!
       this.log(yosay( chalk.green("Done") + "\n" + chalk.green(this.props.file + ".js created") ));

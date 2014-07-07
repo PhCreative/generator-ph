@@ -1,7 +1,7 @@
 require.config({
   baseUrl: "/javascripts",
   paths: {
-    "jquery": <% if (props.jquery) { %>"jquery-2.1.1.min.js"<% } else { %>"jquery-1.11.1.min.js"<% } %>,
+    "jquery": "jquery.js",
     <% if (props.bootstrap) { %>
     "affix": "bootstrap/affix",
     "alert": "bootstrap/alert",
@@ -20,6 +20,10 @@ require.config({
     "jquery": {
       "exports": "$"
     },
+    "main": {
+      "deps": ["jquery"]
+    },
+    //JSInsertLeaveAsIs
     <% if (props.bootstrap) { %>
     "affix": {
       "deps": ["jquery"]
@@ -57,3 +61,6 @@ require.config({
     <% } %>
   }
 });
+
+// Require main.js
+require(["main"]);

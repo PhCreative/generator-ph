@@ -1,6 +1,8 @@
-var yeoman = require('yeoman-generator');
-var yosay = require('yosay');
-var chalk = require('chalk');
+var yeoman = require('yeoman-generator'),
+     yosay = require('yosay'),
+     chalk = require('chalk'),
+    minify = require('minify'),
+        fs = require("fs");
 
 // Export main module
 module.exports = yeoman.generators.NamedBase.extend({
@@ -13,7 +15,7 @@ module.exports = yeoman.generators.NamedBase.extend({
     yeoman.generators.Base.apply(this, arguments);
 
     // Put an initial welcome text
-    this.log(yosay( chalk.green("Hello world!") + "\n" + chalk.green("Its time to generator this project!") ));
+    this.log(yosay( chalk.green("Hello world!") + "\n" + chalk.green("Its time to generate this project!") ));
   },
   /**
   *  Ask all the necessary prompts
@@ -73,12 +75,25 @@ module.exports = yeoman.generators.NamedBase.extend({
       this.log(yosay( chalk.magenta("Time to download Bootstrap!") ));
 
       this.remote("twbs", "bootstrap-sass", "master", function (err, remote) {
+        if (err) throw err;
+
         // Copy to destination
         remote.directory("assets", ".");
 
         done();
       }, true);
     }
+  },
+  reoveUnusedBootstrapFiles: function () {
+    var dest = this.destinationRoot();
+
+    // Remove some unused files
+    fs.renameSync(dest + "\\stylesheets\\bootstrap.scss", dest + "\\stylesheets\\_bootstrap.scss");
+    fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-compass.scss");
+    fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-mincer.scss");
+    fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-sprockets.scss");
+    fs.unlinkSync(dest + "\\javascripts\\bootstrap.js");
+    fs.unlinkSync(dest + "\\javascripts\\bootstrap-sprockets.js");
   },
   /**
   *  Download font awesome
@@ -104,6 +119,15 @@ module.exports = yeoman.generators.NamedBase.extend({
     }
   },
   /**
+  * Move main JS file
+  **/
+  moveJsFile: function () {
+    this.year = new Date().getFullYear();
+
+    // Copy file
+    this.template("_main.js", "javascripts/main.js");
+  },
+  /**
   *  Move main sass file across
   **/
   moveSassFile: function () {
@@ -119,15 +143,18 @@ module.exports = yeoman.generators.NamedBase.extend({
   **/
   downloadJquery: function () {
     var done = this.async();
-    var jquery = "http://code.jquery.com/jquery-1.11.1.min.js";
+    var self = this;
+    var jquery = "jquery-1.11.1.min.js";
 
     if (this.props.jquery) {
       // Latest version
-      jquery = "http://code.jquery.com/jquery-2.1.1.min.js";
+      jquery = "jquery-2.1.1.min.js";
     }
 
     // Download the file
-    this.fetch(jquery, "./javascripts", function (cb) {
+    this.fetch("http://code.jquery.com/" + jquery, "./javascripts/plugins", function (cb) {
+      fs.renameSync(self.destinationRoot() + "\\javascripts\\plugins\\" + jquery, self.destinationRoot() + "\\javascripts\\plugins\\jquery.js");
+
       done();
     });
   },
@@ -136,13 +163,23 @@ module.exports = yeoman.generators.NamedBase.extend({
   **/
   downloadRequire: function () {
     var done = this.async();
+    var self = this;
 
     if (this.props.require) {
       this.remote("jrburke", "requirejs", "master", function (err, remote) {
-        // Copy to destination
-        remote.copy("require.js", "javascripts/require.js");
+        // Minify the file
+        var filePath = remote.src["_options"].base + "\\require.js";
 
-        done();
+        minify.optimize(filePath, {
+          callback: function (err, minData) {
+            if (err) throw err;
+
+            // Create file
+            self.write("./javascripts/require.js", minData);
+
+            done();
+          }
+        });    
       });
     } else {
       done();
@@ -169,6 +206,11 @@ module.exports = yeoman.generators.NamedBase.extend({
     this.log(yosay( chalk.green("Hold on!") + "\n" + chalk.green("Installing all required modules...") ));
 
     // Install NPM deps
-    this.npmInstall();
+    this.npmInstall(null, null, function () {
+      this.log(yosay( chalk.green("Almost!") + "\n" + chalk.green("Almost done, just one more thing!") ));
+
+      // Run grunt command
+      this.spawnCommand("grunt", ["css"]);
+    }.bind(this));
   }
 });

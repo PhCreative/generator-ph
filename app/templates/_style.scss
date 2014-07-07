@@ -5,3 +5,5 @@
 <% if (props.fontawesome) { %>
 @import "fontawesome/font-awesome";
 <% } %>
+@import "<%= _.slugify(props.name) %>/global";
+//SassInsertLeaveAsIs

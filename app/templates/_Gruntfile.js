@@ -42,7 +42,12 @@ module.exports = function(grunt) {
           define: true
         }
       },
-      all: ["javascripts/*.js", "javascripts/**/*.js", "!javascripts/bootstrap/*js", "!javascripts/app.js"]
+      all: ["javascripts/*.js", 
+            "javascripts/**/*.js", 
+            "!javascripts/bootstrap/*js", 
+            "!javascripts/plugins/*js", 
+            "!javascripts/app.js",
+            "!javascripts/require.js"]
     },
     /**
     * Run node-sass
@@ -66,4 +71,6 @@ module.exports = function(grunt) {
 
   // Grunt tasks
   grunt.registerTask("default", ["watch"]);
+  grunt.registerTask("css", ["sass"]);
+  grunt.registerTask("js", ["jshint"]);
 };
