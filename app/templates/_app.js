@@ -1,7 +1,8 @@
 require.config({
   baseUrl: "/javascripts",
   paths: {
-    "jquery": "jquery.js",
+    "jquery": "plugins/jquery",
+    "modernizr": "plugins/modernizr",
     <% if (props.bootstrap) { %>
     "affix": "bootstrap/affix",
     "alert": "bootstrap/alert",
@@ -63,4 +64,4 @@ require.config({
 });
 
 // Require main.js
-require(["main"]);
+require(["modernizr", "main"]);

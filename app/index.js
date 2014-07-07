@@ -49,6 +49,11 @@ module.exports = yeoman.generators.NamedBase.extend({
       type: "confirm",
       message: "Use RequireJS?",
       default: true
+    }, {
+      name: "express",
+      type: "confirm",
+      message: "Want a basic static server? (Uses NodeJS)",
+      default: false
     }];
 
     // Init prompts
@@ -159,6 +164,19 @@ module.exports = yeoman.generators.NamedBase.extend({
     });
   },
   /**
+  * Download Modernizr
+  **/
+  downloadModernizr: function () {
+    var done = this.async();
+    var self = this;
+
+    this.fetch("http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js", "./javascripts/plugins", function (cb) {
+      fs.renameSync(self.destinationRoot() + "\\javascripts\\plugins\\modernizr.min.js", self.destinationRoot() + "\\javascripts\\plugins\\modernizr.js");
+
+      done();
+    });
+  },
+  /**
   *  Download RequireJS
   **/
   downloadRequire: function () {
@@ -194,10 +212,24 @@ module.exports = yeoman.generators.NamedBase.extend({
     }
   },
   /**
+  * ExpressJS server
+  **/
+  setupExpress: function () {
+    if (this.props.express) {
+      this.copy("server.js", "server.js");
+    }
+  },
+  /**
   *  Create Gruntfile across
   **/
   createGrunt: function () {
     this.template("_Gruntfile.js", "Gruntfile.js");
+  },
+  /**
+  * Copy extra files
+  **/
+  copyExtraFiles: function () {
+    this.copy("index.html", "index.html");
   },
   /**
   *  Install all dependancies for this project

@@ -11,5 +11,13 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-sass": "0.12.1",
     "grunt-contrib-jshint": "~0.10.0"
+  <% if (props.express) { %>
+    ,"grunt-express-server": "~0.4.17"
+  <% } %>
+  },
+  "dependencies": {
+  <% if (props.express) { %>
+    "express": "^4.5.1"
+  <% } %>
   }
 }

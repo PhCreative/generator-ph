@@ -62,15 +62,30 @@ module.exports = function(grunt) {
         }
       }
     }
+    /**
+    * Express server
+    **/
+    <% if (props.express) { %>
+    , express: {
+      dev: {
+        options: {
+          script: "server.js"
+        }
+      },
+    },
+    <% } %>
   });
 
   // Load grunt tasks
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  <% if (props.express) { %>
+  grunt.loadNpmTasks('grunt-express-server');
+  <% } %>
 
   // Grunt tasks
-  grunt.registerTask("default", ["watch"]);
+  grunt.registerTask("default", [<% if (props.express) { %>"express:dev",<% } %> "watch"]);
   grunt.registerTask("css", ["sass"]);
   grunt.registerTask("js", ["jshint"]);
 };
