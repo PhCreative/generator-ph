@@ -175,7 +175,7 @@ module.exports = yeoman.generators.NamedBase.extend({
             if (err) throw err;
 
             // Create file
-            self.write("./javascripts/require.js", minData);
+            self.write("./javascripts/plugins/require.js", minData);
 
             done();
           }

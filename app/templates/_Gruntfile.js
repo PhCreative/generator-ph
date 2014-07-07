@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         }
       },
       livereload: {
-        files: "<%%= pkg.files %>",
+        files: ["*.html", "**/.*.cshtml"],
         options: {
           livereload: true
         }
@@ -40,14 +40,14 @@ module.exports = function(grunt) {
           jQuery: true,
           require: true,
           define: true
-        }
+        },
+        ignores: ["javascripts/bootstrap/*js", "javascripts/plugins/*js", "javascripts/app.js", "javascripts/require.js"]
       },
-      all: ["javascripts/*.js", 
-            "javascripts/**/*.js", 
-            "!javascripts/bootstrap/*js", 
-            "!javascripts/plugins/*js", 
-            "!javascripts/app.js",
-            "!javascripts/require.js"]
+      main: {
+        files: {
+          src: ["javascripts/*.js", "javascripts/**/*.js"]
+        }
+      }
     },
     /**
     * Run node-sass
