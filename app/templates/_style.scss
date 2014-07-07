@@ -1,3 +1,7 @@
 <% if (props.bootstrap) { %>
+@import "<%= _.slugify(props.name) %>/vars";
 @import "bootstrap";
+<% } %>
+<% if (props.fontawesome) { %>
+@import "fontawesome/font-awesome";
 <% } %>

@@ -91,9 +91,13 @@ module.exports = yeoman.generators.NamedBase.extend({
       this.log(yosay( chalk.magenta("Time to download Font Awesome!") ));
 
       this.remote("FortAwesome", "Font-Awesome", "master", function (err, remote) {
-        // Copy to destination
-        remote.directory("scss", "stylesheets/fontawesome");
-        remote.directory("fonts", "./fonts");
+        if (!err) {
+          // Copy to destination
+          remote.directory("scss", "stylesheets/fontawesome");
+          remote.directory("fonts", "./fonts");
+        } else {
+          throw err;
+        }
 
         done();
       }, true);
@@ -105,6 +109,10 @@ module.exports = yeoman.generators.NamedBase.extend({
   moveSassFile: function () {
     // Move across the default style.scss for bootstrap
     this.template("_style.scss", "stylesheets/style.scss");
+
+    if (this.props.bootstrap) {
+      this.directory("partials", "stylesheets/" + this._.dasherize(this.props.name));
+    }
   },
   /**
   *  Download jQuery
