@@ -1,4 +1,7 @@
 module.exports = function(grunt) {
+  require('time-grunt')(grunt);
+  require('load-grunt-tasks')(grunt);
+
   // Init grunt
   grunt.initConfig({
       pkg: grunt.file.readJSON("package.json"),
@@ -8,7 +11,7 @@ module.exports = function(grunt) {
     watch: {
       sass: {
         files: ["css/*.scss", "css/**/*.scss"],
-        tasks: ["sass"],
+        tasks: ["sass", 'autoprefixer', 'cssmin'],
         options: {
           livereload: true
         }
@@ -20,8 +23,9 @@ module.exports = function(grunt) {
           livereload: true
         }
       },
-      livereload: {
-        files: ["*.html", "**/.*.cshtml"],
+      bootlint: {
+        files: ["*.html"],
+        tasks: ['bootlint'],
         options: {
           livereload: true
         }
@@ -55,11 +59,27 @@ module.exports = function(grunt) {
     sass: {
       dist: {
         options: {
-          outputStyle: "compressed"
+
         },
         files: {
           "css/style.css": "css/style.scss"
         }
+      }
+    },
+    cssmin: {
+      dist: {
+        files: {
+          'css/style.css': ['css/style.css']
+        }
+      }
+    },
+    autoprefixer: {
+      css: {
+        options: {
+            browsers: ['last 3 versions', 'ie 9']
+        },
+        src: 'css/style.css',
+        dest: 'css/style.css'
       }
     }
     <% if (props.express) { %>
@@ -78,22 +98,14 @@ module.exports = function(grunt) {
     , bootlint:{
       options: {
         relaxerror: ['W005']
-      }
+      },
       files: ['*.html']
     }
     <% } %>
   });
 
-  // Load grunt tasks
-  grunt.loadNpmTasks('grunt-sass');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  <% if (props.express) { %>
-  grunt.loadNpmTasks('grunt-express-server');
-  <% } %>
-
   // Grunt tasks
   grunt.registerTask("default", [<% if (props.express) { %>"express:dev",<% } %> "watch"]);
-  grunt.registerTask("css", ["sass"]);
+  grunt.registerTask("css", ["sass", 'autoprefixer', 'cssmin']);
   grunt.registerTask("js", ["jshint"]);
 };
