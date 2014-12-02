@@ -203,6 +203,15 @@ module.exports = yeoman.generators.NamedBase.extend({
     }
   },
   /**
+  * Download picture polyfil
+  **/
+  downloadPicture: function () {
+    var done = this.async();
+    this.fetch('http://cdnjs.cloudflare.com/ajax/libs/picturefill/2.2.0/picturefill.min.js', './javascripts/plugins', function () {
+      done();
+    });
+  },
+  /**
   *  Make app.js for requireJS
   **/
   createAppJs: function () {
