@@ -93,7 +93,6 @@ module.exports = yeoman.generators.NamedBase.extend({
     var dest = this.destinationRoot();
 
     // Remove some unused files
-    fs.renameSync(dest + "\\stylesheets\\bootstrap.scss", dest + "\\stylesheets\\_bootstrap.scss");
     fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-compass.scss");
     fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-mincer.scss");
     fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-sprockets.scss");
@@ -197,7 +196,7 @@ module.exports = yeoman.generators.NamedBase.extend({
 
             done();
           }
-        });    
+        });
       });
     } else {
       done();
@@ -230,6 +229,14 @@ module.exports = yeoman.generators.NamedBase.extend({
   **/
   copyExtraFiles: function () {
     this.copy("index.html", "index.html");
+    this.copy("mixins/_spread-value.scss", "stylesheets/mixins/_spread-value.scss");
+  },
+  /**
+  * Rename folders
+  **/
+  renameFolders: function () {
+    fs.renameSync('stylesheets', 'css');
+    fs.renameSync('javascripts', 'scripts');
   },
   /**
   *  Install all dependancies for this project

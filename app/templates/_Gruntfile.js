@@ -7,14 +7,14 @@ module.exports = function(grunt) {
     **/
     watch: {
       sass: {
-        files: ["stylesheets/*.scss", "stylesheets/**/*.scss"],
+        files: ["css/*.scss", "css/**/*.scss"],
         tasks: ["sass"],
         options: {
           livereload: true
         }
       },
       js: {
-        files: ["javascripts/*.js", "javascripts/**/*.js", "!javascripts/app.min.js"],
+        files: ["scripts/*.js", "scripts/**/*.js", "!scripts/app.min.js"],
         tasks: ["jshint"],
         options: {
           livereload: true
@@ -41,11 +41,11 @@ module.exports = function(grunt) {
           require: true,
           define: true
         },
-        ignores: ["javascripts/bootstrap/*js", "javascripts/plugins/*js", "javascripts/app.js", "javascripts/require.js"]
+        ignores: ["scripts/bootstrap/*js", "scripts/plugins/*js", "scripts/app.js", "scripts/require.js"]
       },
       main: {
         files: {
-          src: ["javascripts/*.js", "javascripts/**/*.js"]
+          src: ["scripts/*.js", "scripts/**/*.js"]
         }
       }
     },
@@ -58,14 +58,14 @@ module.exports = function(grunt) {
           outputStyle: "compressed"
         },
         files: {
-          "stylesheets/style.css": "stylesheets/style.scss"
+          "css/style.css": "css/style.scss"
         }
       }
     }
+    <% if (props.express) { %>
     /**
     * Express server
     **/
-    <% if (props.express) { %>
     , express: {
       dev: {
         options: {
@@ -73,6 +73,14 @@ module.exports = function(grunt) {
         }
       },
     },
+    <% } %>
+    <% if (props.bootstrap) { %>
+    , bootlint:{
+      options: {
+        relaxerror: ['W005']
+      }
+      files: ['*.html']
+    }
     <% } %>
   });
 

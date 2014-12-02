@@ -1,5 +1,5 @@
 require.config({
-  baseUrl: "/javascripts",
+  baseUrl: "/scripts",
   paths: {
     "jquery": "plugins/jquery",
     "modernizr": "plugins/modernizr",

@@ -6,4 +6,5 @@
 @import "fontawesome/font-awesome";
 <% } %>
 @import "<%= _.slugify(props.name) %>/global";
+@import "mixins/spread-value";
 //SassInsertLeaveAsIs
