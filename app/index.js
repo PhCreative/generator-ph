@@ -43,7 +43,7 @@ module.exports = yeoman.generators.NamedBase.extend({
       name: "jquery",
       type: "confirm",
       message: "Use latest jQuery? (IE9+). Uses 2.1.1 as default.",
-    default: true
+      default: true
     }, {
       name: "require",
       type: "confirm",
