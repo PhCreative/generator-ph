@@ -8,3 +8,19 @@
 @import "<%= _.slugify(props.name) %>/global";
 @import "mixins/spread-value";
 //SassInsertLeaveAsIs
+
+// Style up input errors
+// This is based on jquery-validation
+.input-validation-errors {
+  border-color: $state-danger-bg;
+}
+
+.field-validation-error {
+  color: $state-danger-text;
+}
+
+.form-control {
+  &.valid {
+    border-color: $state-success-bg;
+  }
+}
