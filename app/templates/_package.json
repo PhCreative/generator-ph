@@ -2,6 +2,7 @@
   "name": "<%= _.slugify(props.name) %>",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "author": {
     "name": "Ph.Creative",
     "url": "http://www.ph-creative.com"
@@ -9,7 +10,14 @@
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-watch": "~0.6.1",
+  <% if (props.coffee) { %>
+    "grunt-contrib-coffee": "~0.12.0",
+  <% } %>
+  <% if (props.sass) { %>
     "grunt-sass": "0.16.1",
+  <% } else { %>
+    "grunt-contrib-stylus": "~0.20.0",
+  <% } %>
     "grunt-contrib-jshint": "~0.10.0",
     "time-grunt": "^1.0.0",
     "load-grunt-tasks": "^1.0.0",

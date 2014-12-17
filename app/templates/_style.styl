@@ -1,0 +1,23 @@
+<% if (props.bootstrap) { %>
+@import "bootstrap/bootstrap";
+<% } %>
+<% if (props.fontawesome) { %>
+@import "fontawesome/font-awesome";
+<% } %>
+@import "<%= _.slugify(props.name) %>/global";
+
+// Style up input errors
+// This is based on jquery-validation
+.input-validation-errors {
+  border-color: $state-danger-bg;
+}
+
+.field-validation-error {
+  color: $state-danger-text;
+}
+
+.form-control {
+  &.valid {
+    border-color: $state-success-bg;
+  }
+}

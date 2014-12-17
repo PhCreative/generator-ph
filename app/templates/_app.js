@@ -3,8 +3,7 @@ require.config({
   paths: {
     "jquery": "plugins/jquery",
     "modernizr": "plugins/modernizr",
-    <% if (props.bootstrap) { %>
-    "affix": "bootstrap/affix",
+    <% if (props.bootstrap) { %>"affix": "bootstrap/affix",
     "alert": "bootstrap/alert",
     "button": "bootstrap/button",
     "collapse": "bootstrap/collapse",
@@ -14,8 +13,7 @@ require.config({
     "scrollspy": "bootstrap/scrollspy",
     "tab": "bootstrap/tab",
     "tooltip": "bootstrap/tooltip",
-    "transition": "bootstrap/transition"
-    <% } %>
+    "transition": "bootstrap/transition"<% } %>
   },
   shim: {
     "jquery": {
@@ -24,9 +22,7 @@ require.config({
     "main": {
       "deps": ["jquery"]
     },
-    //JSInsertLeaveAsIs
-    <% if (props.bootstrap) { %>
-    "affix": {
+    <% if (props.bootstrap) { %>"affix": {
       "deps": ["jquery"]
     },
     "alert": {
@@ -58,8 +54,7 @@ require.config({
     },
     "transition": {
       "deps": ["jquery"]
-    }
-    <% } %>
+    }<% } %>
   }
 });
 

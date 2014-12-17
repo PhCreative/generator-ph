@@ -35,10 +35,20 @@ module.exports = yeoman.generators.NamedBase.extend({
       message: "Do you want to use Bootstrap?",
       default: true
     }, {
+      name: "sass",
+      type: "confirm",
+      message: "Do you want to SASS? (Stylus is the alternative)",
+      default: true
+    }, {
       name: "fontawesome",
       type: "confirm",
       message: "Do you want to use Font Awesome?",
       default: true
+    }, {
+      name: 'coffee',
+      type: 'confirm',
+      message: 'Do you want to use CoffeeScript?',
+      default: false
     }, {
       name: "jquery",
       type: "confirm",
@@ -79,25 +89,41 @@ module.exports = yeoman.generators.NamedBase.extend({
       // Give a message
       this.log(yosay( chalk.magenta("Time to download Bootstrap!") ));
 
-      this.remote("twbs", "bootstrap-sass", "master", function (err, remote) {
-        if (err) throw err;
+      if (this.props.sass) {
+        this.remote("twbs", "bootstrap-sass", "master", function (err, remote) {
+          if (err) throw err;
 
-        // Copy to destination
-        remote.directory("assets", ".");
+          // Copy to destination
+          remote.directory("assets", ".");
 
-        done();
-      }, true);
+          done();
+        }, true);
+      } else {
+        // Stylus version
+        this.remote('Acquisio', 'bootstrap-stylus', 'master', function (err, remote) {
+          if (err) throw err;
+
+          // Copy files
+          remote.directory('stylus', 'stylesheets/bootstrap');
+          remote.directory('js', 'javascripts/bootstrap');
+          remote.directory('fonts', './fonts');
+
+          done();
+        }, true);
+      }
     }
   },
   reoveUnusedBootstrapFiles: function () {
-    var dest = this.destinationRoot();
+    if (this.props.sass) {
+      var dest = this.destinationRoot();
 
-    // Remove some unused files
-    fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-compass.scss");
-    fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-mincer.scss");
-    fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-sprockets.scss");
-    fs.unlinkSync(dest + "\\javascripts\\bootstrap.js");
-    fs.unlinkSync(dest + "\\javascripts\\bootstrap-sprockets.js");
+      // Remove some unused files
+      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-compass.scss");
+      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-mincer.scss");
+      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-sprockets.scss");
+      fs.unlinkSync(dest + "\\javascripts\\bootstrap.js");
+      fs.unlinkSync(dest + "\\javascripts\\bootstrap-sprockets.js");
+    }
   },
   /**
   *  Download font awesome
@@ -105,14 +131,21 @@ module.exports = yeoman.generators.NamedBase.extend({
   donwloadFontAwesome: function () {
     if (this.props.fontawesome) {
       var done = this.async();
+      var self = this;
 
       // Give a message
       this.log(yosay( chalk.magenta("Time to download Font Awesome!") ));
 
-      this.remote("FortAwesome", "Font-Awesome", "master", function (err, remote) {
+      var username = this.props.sass ? 'FortAwesome' : 'raulghm';
+      var repoName = this.props.sass ? 'Font-Awesome' : 'Font-Awesome-Stylus';
+      this.remote(username, repoName, "master", function (err, remote) {
         if (!err) {
           // Copy to destination
-          remote.directory("scss", "stylesheets/fontawesome");
+          if (self.props.sass) {
+            remote.directory("scss", "stylesheets/fontawesome");
+          } else {
+            remote.directory("stylus", "stylesheets/fontawesome");
+          }
           remote.directory("fonts", "./fonts");
         } else {
           throw err;
@@ -129,17 +162,23 @@ module.exports = yeoman.generators.NamedBase.extend({
     this.year = new Date().getFullYear();
 
     // Copy file
-    this.template("_main.js", "javascripts/main.js");
+    if (this.props.coffee) {
+      this.template("_main.coffee", "javascripts/lib/main.coffee");
+    } else {
+      this.template("_main.js", "javascripts/main.js");
+    }
   },
   /**
   *  Move main sass file across
   **/
   moveSassFile: function () {
-    // Move across the default style.scss for bootstrap
-    this.template("_style.scss", "stylesheets/style.scss");
-
-    if (this.props.bootstrap) {
+    if (this.props.bootstrap && this.props.sass) {
+      // Move across the default style.scss for bootstrap
+      this.template("_style.scss", "stylesheets/style.scss");
       this.directory("partials", "stylesheets/" + this._.dasherize(this.props.name));
+    } else if (this.props.bootstrap && !this.props.sass) {
+      this.template("_style.styl", "stylesheets/style.styl");
+      this.template("partials/global.styl", "stylesheets/" + this._.dasherize(this.props.name) + "/global.styl");
     }
   },
   /**
@@ -216,7 +255,11 @@ module.exports = yeoman.generators.NamedBase.extend({
   **/
   createAppJs: function () {
     if (this.props.require) {
-      this.template("_app.js", "javascripts/app.js");
+      if (this.props.coffee) {
+        this.template("_app.coffee", "javascripts/lib/app.coffee");
+      } else {
+        this.template("_app.js", "javascripts/app.js");
+      }
     }
   },
   /**
@@ -238,7 +281,10 @@ module.exports = yeoman.generators.NamedBase.extend({
   **/
   copyExtraFiles: function () {
     this.copy("index.html", "index.html");
-    this.copy("mixins/_spread-value.scss", "stylesheets/mixins/_spread-value.scss");
+
+    if (this.props.sass) {
+      this.copy("mixins/_spread-value.scss", "stylesheets/mixins/_spread-value.scss");
+    }
   },
   /**
   * Rename folders
@@ -259,6 +305,10 @@ module.exports = yeoman.generators.NamedBase.extend({
 
       // Run grunt command
       this.spawnCommand("grunt", ["css"]);
+
+      if (this.coffee) {
+        this.spawnCommand('grunt', ['coffee']);
+      }
     }.bind(this));
   }
 });

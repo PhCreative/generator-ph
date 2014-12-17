@@ -4,33 +4,48 @@ module.exports = function(grunt) {
 
   // Init grunt
   grunt.initConfig({
-      pkg: grunt.file.readJSON("package.json"),
+    pkg: grunt.file.readJSON('package.json'),
     /**
     * Watch files for changes
     **/
     watch: {
-      sass: {
-        files: ["css/*.scss", "css/**/*.scss"],
-        tasks: ["sass", 'autoprefixer', 'cssmin'],
+      css: {
+        files: ['css/*.scss', 'css/**/*.scss'],
+      <% if (props.sass) { %>
+        tasks: ['sass', 'autoprefixer', 'cssmin'],
+      <% } else { %>
+        tasks: ['stylus'],
+      <% } %>
         options: {
           livereload: true
         }
       },
+    <% if (props.coffee) { %>
+      coffee: {
+        files: ['scripts/lib/*.coffee'],
+        tasks: ['coffee'],
+        options: {
+          livereload: true
+        }
+      },
+    <% } else { %>
       js: {
-        files: ["scripts/*.js", "scripts/**/*.js", "!scripts/app.min.js"],
-        tasks: ["jshint"],
+        files: ['scripts/*.js', 'scripts/**/*.js', '!scripts/app.min.js'],
+        tasks: ['jshint'],
         options: {
           livereload: true
         }
       },
+    <% } %>
       bootlint: {
-        files: ["*.html"],
+        files: ['*.html'],
         tasks: ['bootlint'],
         options: {
           livereload: true
         }
       }
     },
+  <% if (!props.coffee) { %>
     /**
     *  JSHint
     **/
@@ -45,14 +60,27 @@ module.exports = function(grunt) {
           require: true,
           define: true
         },
-        ignores: ["scripts/bootstrap/*js", "scripts/plugins/*js", "scripts/app.js", "scripts/require.js"]
+        ignores: ['scripts/bootstrap/*js', 'scripts/plugins/*js', 'scripts/app.js', 'scripts/require.js']
       },
       main: {
         files: {
-          src: ["scripts/*.js", "scripts/**/*.js"]
+          src: ['scripts/*.js', 'scripts/**/*.js']
         }
       }
     },
+  <% } else { %>
+    coffee: {
+      compile: {
+        expand: true,
+        flatten: true,
+        cwd: 'scripts/lib',
+        src: ['*.coffee'],
+        dest: 'scripts/',
+        ext: '.js'
+      }
+    },
+  <% } %>
+  <% if (props.sass) { %>
     /**
     * Run node-sass
     **/
@@ -62,10 +90,22 @@ module.exports = function(grunt) {
 
         },
         files: {
-          "css/style.css": "css/style.scss"
+          'css/style.css': 'css/style.scss'
         }
       }
     },
+  <% } else { %>
+    stylus: {
+      compile: {
+        options: {
+          compressed: true
+        },
+        files: {
+          'css/style.css': 'css/style.styl'
+        }
+      }
+    },
+  <% } %>
     cssmin: {
       dist: {
         files: {
@@ -82,30 +122,32 @@ module.exports = function(grunt) {
         dest: 'css/style.css'
       }
     }
-    <% if (props.express) { %>
+  <% if (props.express) { %>
     /**
     * Express server
     **/
-    , express: {
+    ,express: {
       dev: {
         options: {
-          script: "server.js"
+          script: 'server.js'
         }
       },
-    },
-    <% } %>
-    <% if (props.bootstrap) { %>
-    , bootlint:{
+    }
+  <% } %>
+  <% if (props.bootstrap) { %>
+    ,bootlint:{
       options: {
         relaxerror: ['W005']
       },
       files: ['*.html']
     }
-    <% } %>
+  <% } %>
   });
 
   // Grunt tasks
-  grunt.registerTask("default", [<% if (props.express) { %>"express:dev",<% } %> "watch"]);
-  grunt.registerTask("css", ["sass", 'autoprefixer', 'cssmin']);
-  grunt.registerTask("js", ["jshint"]);
+  grunt.registerTask('default', [<% if (props.express) { %>'express:dev',<% } %> 'watch']);
+  grunt.registerTask('css', [<% if (props.sass) { %>'sass', 'autoprefixer', 'cssmin'<% } else { %>'stylus'<% } %>]);
+<% if (!props.coffee) { %>
+  grunt.registerTask('js', ['jshint']);
+<% } %>
 };
