@@ -104,7 +104,7 @@ module.exports = yeoman.generators.NamedBase.extend({
           if (err) throw err;
 
           // Copy files
-          remote.directory('stylus', 'stylesheets/bootstrap');
+          remote.directory('bootstrap', 'stylesheets/bootstrap');
           remote.directory('js', 'javascripts/bootstrap');
           remote.directory('fonts', './fonts');
 
