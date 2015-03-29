@@ -250,6 +250,35 @@ module.exports = yeoman.generators.NamedBase.extend({
       done();
     });
   },
+   /**
+  *  Download BasepackageHTML files
+  **/
+  downloadBasepackage: function () {
+      var done = this.async();
+
+      // Give a message
+      this.log(yosay( chalk.magenta("Time to download Basepackage!") ));
+ 
+      this.remote("PhCreative", "BasepackageHTML", "master", function (err, remote) {
+        if (err) throw err;
+
+        // Copy to destination
+        remote.file("articles/one-col.html", ".");
+
+        done();
+      }, true);
+        
+  },
+  reoveUnusedBasepackageFiles: function () {
+      var dest = this.destinationRoot();
+
+      // Remove some unused files
+      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-compass.scss");
+      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-mincer.scss");
+      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-sprockets.scss");
+      fs.unlinkSync(dest + "\\javascripts\\bootstrap.js");
+      fs.unlinkSync(dest + "\\javascripts\\bootstrap-sprockets.js");
+  },
   /**
   *  Make app.js for requireJS
   **/
