@@ -1,11 +1,11 @@
 <% if (props.bootstrap) { %>
-@import "<%= _.slugify(props.name) %>/vars";
+@import "skin/vars";
 @import "bootstrap";
 <% } %>
 <% if (props.fontawesome) { %>
 @import "fontawesome/font-awesome";
 <% } %>
-@import "<%= _.slugify(props.name) %>/global";
+@import "skin/global";
 @import "mixins/spread-value";
 //SassInsertLeaveAsIs
 

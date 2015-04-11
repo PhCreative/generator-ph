@@ -25,6 +25,18 @@ module.exports = yeoman.generators.NamedBase.extend({
 
     // Create an array of prompts
     var prompts = [{
+      name: "git",
+      type: "input",
+      message: "You need to set the BasePackageHTML git repo as public while you run this generator. Enter 'yes' once you have done this.",
+      validate: function( value ) {
+        var pass = value.match("yes");
+        if (pass) {
+          return true;
+        } else {
+          return "Please enter 'yes' when you have made the repo public";
+        }
+      }
+    }, {
       name: "name",
       type: "input",
       message: "Project name",
@@ -60,10 +72,15 @@ module.exports = yeoman.generators.NamedBase.extend({
       message: "Use RequireJS?",
       default: true
     }, {
+      name: "blogIsotope",
+      type: "confirm",
+      message: "Use isotope layout for blog listing?",
+      default: false
+    }, {
       name: "express",
       type: "confirm",
       message: "Want a basic static server? (Uses NodeJS)",
-      default: false
+      default: true
     }];
 
     // Init prompts
@@ -78,6 +95,209 @@ module.exports = yeoman.generators.NamedBase.extend({
         done();
       }
     }.bind(this));
+  },
+   /**
+  *  Download BasepackageHTML files
+  **/
+  downloadStandardPages: function () {
+      var done = this.async();
+
+      this.remote("PhCreative", "BasepackageHTML", "master", function (err, remote) {
+        if (err) throw err;
+
+        // Copy to destination
+        remote.directory("standard_pages", ".");
+
+        done();
+      }, true);
+        
+  },
+  removeUnusedStandardPages: function () {
+    var dest = this.destinationRoot();
+
+    // Remove some unused files
+    fs.unlinkSync(dest + "\\index-menu.html");
+    fs.unlinkSync(dest + "\\landing-page.html");
+  },
+  /**
+  * Download Footer
+  **/
+  downloadFooter: function () {
+    var done = this.async();
+    var self = this;
+    this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/footers/footer-standard-elements.html', '.', function (cb) {
+    fs.renameSync(self.destinationRoot() + "/footer-standard-elements.html", self.destinationRoot() + "/footer.html");
+    done();
+    });
+  },
+  /**
+  * Download Header
+  **/
+  downloadHeader: function () {
+    var done = this.async();
+    var self = this;
+    this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/headers-and-navs/header-standard.html', '.', function (cb) {
+    fs.renameSync(self.destinationRoot() + "/header-standard.html", self.destinationRoot() + "/header.html");
+    done();
+    });
+  },
+  /**
+  * Download Article pages
+  **/
+  downloadArticle: function () {
+    var done = this.async();
+    var self = this;
+    this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/articles/two-col.html', '.', function (cb) {
+    fs.renameSync(self.destinationRoot() + "/two-col.html", self.destinationRoot() + "/article.html");
+    done();
+    });
+  }, 
+  /**
+  * Download Blog pages
+  **/
+  downloadBlogAuthor: function () {
+    var done = this.async();
+
+    this.fetch("https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/blog/blog-author.html", ".", function (err) {
+        if (err) throw err;
+        done();
+      });
+  }, 
+  downloadBlogAuthorList: function () {
+    var done = this.async();
+
+    this.fetch("https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/blog/blog-author-list.html", ".", function (err) {
+        if (err) throw err;
+        done();
+      });
+  },
+  downloadBlogDetail: function () {
+    var done = this.async();
+
+    this.fetch("https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/blog/blog-detail.html", ".", function (err) {
+        if (err) throw err;
+        done();
+      });
+  },
+  DownloadBlogListing: function () {
+    if (this.props.blogIsotope) {      
+      // download blog isotope listing
+      var done = this.async();
+      var self = this;
+      this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/blog/blog-isotope.html', '.', function (cb) {
+      fs.renameSync(self.destinationRoot() + "/blog-isotope.html", self.destinationRoot() + "/blog.html");
+      done();
+    });
+    } else {
+      // download blog listing
+      var done = this.async();
+      this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/blog/blog.html', '.', function (err) {
+        if (err) throw err;
+        done();
+      });
+    }
+  },
+  /**
+  *  Download BasepackageHTML sass
+  **/
+  donwloadBasePackageSass: function () {
+    if (this.props.sass) {
+      var done = this.async();
+      //var self = this;
+
+      // Give a message
+      this.log(yosay( chalk.magenta("Time to download BasePackage sass!") ));
+
+      this.remote("PhCreative", "BasepackageHTML", "master", function (err, remote) {
+        if (!err) {
+          // Copy to destination
+          
+            remote.directory("css/skin", "stylesheets/skin");
+            remote.directory("css/plugins", "stylesheets/plugins");
+            remote.directory("css/mixins", "stylesheets/mixins");
+          
+        } else {
+          throw err;
+        }
+
+        done();
+      }, true);
+    }
+  },
+  /**
+  *  Download style sass
+  **/
+  donwloadBasePackageSassStyle: function () {
+    var done = this.async();
+
+    this.fetch("https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/css/style.scss", "stylesheets", function (err) {
+        if (err) throw err;
+        done();
+      });
+  },
+  /**
+  *  Download BasepackageHTML script plugins folder
+  **/
+  donwloadBasePackageJSPlugins: function () {
+      var done = this.async();
+      //var self = this;
+
+      // Give a message
+      this.log(yosay( chalk.magenta("Time to download BasePackage JS plugins!") ));
+
+      this.remote("PhCreative", "BasepackageHTML", "master", function (err, remote) {
+        if (!err) {
+          // Copy to destination
+          
+            remote.directory("scripts/plugins", "javascripts/plugins");
+          
+        } else {
+          throw err;
+        }
+
+        done();
+      }, true); 
+  },
+  removerequireJS: function () {
+    if (this.props.sass) {
+      var dest = this.destinationRoot();
+
+      // Remove some unused files
+      fs.unlinkSync(dest + "\\javascripts\\plugins\\require.js");
+    }
+  },
+  /**
+  * Fetch main JS file
+  **/
+  moveJsFile: function () {
+    var done = this.async();
+    this.year = new Date().getFullYear();
+
+    // Copy file
+    if (this.props.coffee) {
+      this.template("_main.coffee", "javascripts/lib/main.coffee");
+    } else {
+      //this.template("_main.js", "javascripts/main.js");
+      this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/scripts/main.js', './javascripts', function () {
+      });
+      done();
+    }
+  },
+  /**
+  *  Fetch app.js for requireJS
+  **/
+  createAppJs: function () {
+    var done = this.async();
+    if (this.props.require) {
+      if (this.props.coffee) {
+        //this.template("_app.coffee", "javascripts/lib/app.coffee");
+      } else {
+        //this.template("_app.js", "javascripts/app.js");
+        this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/scripts/app.js', './javascripts', function () {
+        });
+        done();
+      }
+    }
   },
   /**
   *  Download bootstrap if required
@@ -113,7 +333,7 @@ module.exports = yeoman.generators.NamedBase.extend({
       }
     }
   },
-  reoveUnusedBootstrapFiles: function () {
+  removeUnusedBootstrapFiles: function () {
     if (this.props.sass) {
       var dest = this.destinationRoot();
 
@@ -153,32 +373,6 @@ module.exports = yeoman.generators.NamedBase.extend({
 
         done();
       }, true);
-    }
-  },
-  /**
-  * Move main JS file
-  **/
-  moveJsFile: function () {
-    this.year = new Date().getFullYear();
-
-    // Copy file
-    if (this.props.coffee) {
-      this.template("_main.coffee", "javascripts/lib/main.coffee");
-    } else {
-      this.template("_main.js", "javascripts/main.js");
-    }
-  },
-  /**
-  *  Move main sass file across
-  **/
-  moveSassFile: function () {
-    if (this.props.bootstrap && this.props.sass) {
-      // Move across the default style.scss for bootstrap
-      this.template("_style.scss", "stylesheets/style.scss");
-      this.directory("partials", "stylesheets/" + this._.dasherize(this.props.name));
-    } else if (this.props.bootstrap && !this.props.sass) {
-      this.template("_style.styl", "stylesheets/style.styl");
-      this.template("partials/global.styl", "stylesheets/" + this._.dasherize(this.props.name) + "/global.styl");
     }
   },
   /**
@@ -251,18 +445,6 @@ module.exports = yeoman.generators.NamedBase.extend({
     });
   },
   /**
-  *  Make app.js for requireJS
-  **/
-  createAppJs: function () {
-    if (this.props.require) {
-      if (this.props.coffee) {
-        this.template("_app.coffee", "javascripts/lib/app.coffee");
-      } else {
-        this.template("_app.js", "javascripts/app.js");
-      }
-    }
-  },
-  /**
   * ExpressJS server
   **/
   setupExpress: function () {
@@ -280,11 +462,9 @@ module.exports = yeoman.generators.NamedBase.extend({
   * Copy extra files
   **/
   copyExtraFiles: function () {
+
     this.copy("index.html", "index.html");
 
-    if (this.props.sass) {
-      this.copy("mixins/_spread-value.scss", "stylesheets/mixins/_spread-value.scss");
-    }
   },
   /**
   * Rename folders
