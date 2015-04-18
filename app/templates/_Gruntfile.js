@@ -60,7 +60,7 @@ module.exports = function(grunt) {
           require: true,
           define: true
         },
-        ignores: ['scripts/bootstrap/*js', 'scripts/plugins/*js', 'scripts/app.js', 'scripts/require.js']
+        ignores: ['scripts/bootstrap/*js', 'scripts/plugins/*js', 'scripts/app.js', 'scripts/require.js', 'scripts/plugins/require.js', 'scripts/bootstrap.min.js']
       },
       main: {
         files: {
