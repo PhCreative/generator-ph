@@ -152,6 +152,16 @@ module.exports = yeoman.generators.NamedBase.extend({
     done();
     });
   }, 
+   /**
+  * Download Grid page
+  **/
+  downloadGrid: function () {
+    var done = this.async();
+    var self = this;
+    this.fetch('https://raw.githubusercontent.com/PhCreative/BasepackageHTML/master/grids/grid.html', '.', function (cb) {
+    done();
+    });
+  }, 
   /**
   * Download Blog pages
   **/
