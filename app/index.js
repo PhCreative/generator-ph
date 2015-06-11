@@ -273,7 +273,7 @@ module.exports = yeoman.generators.NamedBase.extend({
       var dest = this.destinationRoot();
 
       // Remove some unused files
-      fs.unlinkSync(dest + "\\javascripts\\plugins\\require.js");
+      fs.unlinkSync(dest + "/javascripts/plugins/require.js");
     }
   },
   /**
@@ -348,11 +348,11 @@ module.exports = yeoman.generators.NamedBase.extend({
       var dest = this.destinationRoot();
 
       // Remove some unused files
-      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-compass.scss");
-      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-mincer.scss");
-      fs.unlinkSync(dest + "\\stylesheets\\_bootstrap-sprockets.scss");
-      fs.unlinkSync(dest + "\\javascripts\\bootstrap.js");
-      fs.unlinkSync(dest + "\\javascripts\\bootstrap-sprockets.js");
+      fs.unlinkSync(dest + "/stylesheets/_bootstrap-compass.scss");
+      fs.unlinkSync(dest + "/stylesheets/_bootstrap-mincer.scss");
+      fs.unlinkSync(dest + "/stylesheets/_bootstrap-sprockets.scss");
+      fs.unlinkSync(dest + "/javascripts/bootstrap.js");
+      fs.unlinkSync(dest + "/javascripts/bootstrap-sprockets.js");
     }
   },
   /**
@@ -400,7 +400,7 @@ module.exports = yeoman.generators.NamedBase.extend({
 
     // Download the file
     this.fetch("http://code.jquery.com/" + jquery, "./javascripts/plugins", function (cb) {
-      fs.renameSync(self.destinationRoot() + "\\javascripts\\plugins\\" + jquery, self.destinationRoot() + "\\javascripts\\plugins\\jquery.js");
+      fs.renameSync(self.destinationRoot() + "/javascripts/plugins/" + jquery, self.destinationRoot() + "/javascripts/plugins/jquery.js");
 
       done();
     });
@@ -413,7 +413,7 @@ module.exports = yeoman.generators.NamedBase.extend({
     var self = this;
 
     this.fetch("http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js", "./javascripts/plugins", function (cb) {
-      fs.renameSync(self.destinationRoot() + "\\javascripts\\plugins\\modernizr.min.js", self.destinationRoot() + "\\javascripts\\plugins\\modernizr.js");
+      fs.renameSync(self.destinationRoot() + "/javascripts/plugins/modernizr.min.js", self.destinationRoot() + "/javascripts/plugins/modernizr.js");
 
       done();
     });
@@ -428,7 +428,7 @@ module.exports = yeoman.generators.NamedBase.extend({
     if (this.props.require) {
       this.remote("jrburke", "requirejs", "master", function (err, remote) {
         // Minify the file
-        var filePath = remote.src["_options"].base + "\\require.js";
+        var filePath = remote.src["_options"].base + "/require.js";
 
         minify.optimize(filePath, {
           callback: function (err, minData) {
