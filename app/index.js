@@ -116,8 +116,8 @@ module.exports = yeoman.generators.NamedBase.extend({
     var dest = this.destinationRoot();
 
     // Remove some unused files
-    fs.unlinkSync(dest + "\\index-menu.html");
-    fs.unlinkSync(dest + "\\landing-page.html");
+    //fs.unlinkSync(dest + "\\index-menu.html");
+    //fs.unlinkSync(dest + "\\landing-page.html");
   },
   /**
   * Download Footer
